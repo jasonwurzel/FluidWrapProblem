@@ -1,0 +1,35 @@
+﻿<Page
+    x:Class="FluidWrapProblem.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FluidWrapProblem"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CompositionProToolkit.Controls"
+    xmlns:reactiveUi="using:ReactiveUI"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="80"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<StackPanel Orientation="Horizontal">
+			<Button x:Name="Button2x2" Content="2x2"/>
+			<Button x:Name="Button3x3" Content="3x3"/>
+		</StackPanel>
+	    <ItemsControl x:Name="GridView" Grid.Row="1" Margin="50">
+		    <ItemsControl.ItemsPanel>
+			    <ItemsPanelTemplate>
+				    <controls:FluidWrapPanel ItemHeight="{Binding ItemsHeight}" ItemWidth="{Binding ItemsWidth}" IsComposing="{Binding IsComposing}" 
+				                             Orientation="{Binding Orientation}" Background="Violet" FluidAnimationDuration="0:0:0.2"  DragOpacity="1" />
+			    </ItemsPanelTemplate>
+		    </ItemsControl.ItemsPanel>
+		    <ItemsControl.ItemTemplate>
+			    <DataTemplate>
+					<reactiveUi:ViewModelViewHost x:Name="ViewModelViewHost" ViewModel="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="45"/>
+			    </DataTemplate>
+		    </ItemsControl.ItemTemplate>
+	    </ItemsControl>
+    </Grid>
+</Page>
