@@ -30,7 +30,11 @@ namespace FluidWrapProblem
             this.InitializeComponent();
 
 			ViewModel = new MainPageViewModel();
-			
+
+
+	        this.Button2x2.Events().Click.Subscribe(_ => ViewModel.TilingOptions = TilingOptions.Option2X2);
+	        this.Button3x3.Events().Click.Subscribe(_ => ViewModel.TilingOptions = TilingOptions.Option3X3);
+
 	        this.OneWayBind(ViewModel, model => model.GridItems, view => view.GridView.ItemsSource)
 		        //.DisposeWith(disposable)
 		        ;

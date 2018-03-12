@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Windows.Foundation;
@@ -29,28 +30,24 @@ namespace FluidWrapProblem
 		[Reactive]
 		public Size ViewDimensions { get; set; }
 
+		[Reactive]
+		public TilingOptions TilingOptions { get; set; }
+
 
 		public ReactiveList<SingleTileViewModel> GridItems { get; set; } = new ReactiveList<SingleTileViewModel>();
 
 		public MainPageViewModel()
 		{
-			GridItems.AddRange(new[]
-			{
-				new SingleTileViewModel(),
-				new SingleTileViewModel(),
-				new SingleTileViewModel(),
-				new SingleTileViewModel(),
-			});
-
-			this.WhenAnyValue(model => model.ViewDimensions)
-				//.ObserveOn(TaskPoolScheduler.Default)
-				.Subscribe(size =>
+			this.WhenAnyValue(model => model.ViewDimensions, model => model.TilingOptions)
+				.Subscribe(sizeAndTiling =>
 				{
-					var rows = 2;
-					var columns = 2;
+					var size = sizeAndTiling.Item1;
+					var tiling = sizeAndTiling.Item2;
 
-					//var width = 300;
-					//var height = 300;
+					int rows = tiling == TilingOptions.Option2X2 ? 2 : 3;
+					int columns = tiling == TilingOptions.Option2X2 ? 2 : 3;
+
+					adjustSingleTileViewModelCount(rows, columns);
 
 					var width = Math.Floor(size.Width / columns);
 					var height = Math.Floor(size.Height / rows);
@@ -69,5 +66,20 @@ namespace FluidWrapProblem
 
 
 		}
+
+		private void adjustSingleTileViewModelCount(int rows, int columns)
+		{
+			while (GridItems.Count > rows * columns)
+				GridItems.RemoveAt(GridItems.Count - 1);
+
+			while (GridItems.Count < rows * columns)
+				GridItems.Add(new SingleTileViewModel());
+		}
+	}
+
+	public enum TilingOptions
+	{
+		Option2X2,
+		Option3X3
 	}
 }
